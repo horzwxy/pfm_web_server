@@ -38,4 +38,29 @@ public class DataOutServlet extends HttpServlet {
 					+ " date: " + date );
 		}
 	}
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		
+		Query query = new Query( "example" );
+		PreparedQuery pQuery = service.prepare( query );
+		
+		resp.setContentType("text/plain");
+		
+		resp.getWriter().println( pQuery.asIterable().iterator().hasNext() );
+		
+		for(Entity entity: pQuery.asIterable()) {
+			String property1 = (String)entity.getProperty( "property1" );
+			long property2 = (long)entity.getProperty( "property2" );
+			Date date = (Date)entity.getProperty("date");
+			resp.getWriter().println( "property1: " + property1
+					+ " property2: " + property2
+					+ " date: " + date );
+		}
+		
+		resp.getWriter().println( req.getParameter( "testPara" ) );
+	}
 }

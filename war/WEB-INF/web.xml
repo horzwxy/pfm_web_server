@@ -13,6 +13,24 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>DataOut</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.example.DataOutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DataOut</servlet-name>
+		<url-pattern>/dataout</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>DataIn</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.example.DataInServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DataIn</servlet-name>
+		<url-pattern>/datain</url-pattern>
+	</servlet-mapping>
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
