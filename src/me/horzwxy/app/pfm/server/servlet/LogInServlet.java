@@ -15,7 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 
-import me.horzwxy.app.pfm.server.model.User;
+import me.horzwxy.app.pfm.model.User;
 import me.horzwxy.app.pfm.server.tool.EntityFactory;
 
 public class LogInServlet extends HttpServlet {
@@ -26,7 +26,7 @@ public class LogInServlet extends HttpServlet {
 		try{
 
 			String accountName = req.getParameter( "aname" );
-			Entity entity = EntityFactory.createUserEntity( new User( accountName ) );
+			Entity entity = EntityFactory.createUserEntity( new User() );
 			
 			DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 			
