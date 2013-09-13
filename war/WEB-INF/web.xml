@@ -4,6 +4,7 @@ xmlns="http://java.sun.com/xml/ns/javaee"
 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<!-- start of servlets -->
 	<servlet>
 		<servlet-name>LogIn</servlet-name>
 		<servlet-class>me.horzwxy.app.pfm.server.servlet.LogInServlet</servlet-class>
@@ -13,6 +14,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>SetNickname</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.SetNicknameServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SetNickname</servlet-name>
+		<url-pattern>/setnickname</url-pattern>
+	</servlet-mapping>
+	<!-- end of servlets -->
+	
+	<!-- start of example servlets -->
 	<servlet>
 		<servlet-name>DataOut</servlet-name>
 		<servlet-class>me.horzwxy.app.pfm.server.example.DataOutServlet</servlet-class>
@@ -30,6 +42,27 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>DataIn</servlet-name>
 		<url-pattern>/datain</url-pattern>
 	</servlet-mapping>
+	<!-- end of example servlets -->
+	
+	<!-- start of admin servlets -->
+	<servlet>
+		<servlet-name>AddTestUser</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.admin.AddTestUserServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AddTestUser</servlet-name>
+		<url-pattern>/addtestuser</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ShowAllUser</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.admin.ShowAllUsersServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ShowAllUser</servlet-name>
+		<url-pattern>/alluser</url-pattern>
+	</servlet-mapping>
+	<!-- end of admin servlets -->
 	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

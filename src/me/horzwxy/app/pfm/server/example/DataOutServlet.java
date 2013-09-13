@@ -44,6 +44,7 @@ public class DataOutServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		System.out.println( "receive" );
 		
 		Query query = new Query( "example" );
 		PreparedQuery pQuery = service.prepare( query );
@@ -61,6 +62,6 @@ public class DataOutServlet extends HttpServlet {
 					+ " date: " + date );
 		}
 		
-		resp.getWriter().println( req.getParameter( "testPara" ) );
+		resp.getWriter().println( req.getParameter( "key" ) );
 	}
 }
