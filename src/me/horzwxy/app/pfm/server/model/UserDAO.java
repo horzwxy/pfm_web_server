@@ -51,6 +51,11 @@ public class UserDAO {
 	
 	public static void updateUser( User user ) {
 		Entity entity = getUserEntityByOneProperty( "email", user.email );
+		if( entity == null ) {
+			entity = new Entity( "user" );
+			entity.setProperty( "email", user.email );
+			entity.setProperty( "nickname", user.nickname );
+		}
 		entity.setProperty( "nickname", user.nickname );
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		service.put( entity );
@@ -62,6 +67,9 @@ public class UserDAO {
 		Query query = new Query( "user" ).setFilter( filter );
 		PreparedQuery pQuery = service.prepare( query );
 		Iterator< Entity > iterator = pQuery.asIterator();
+		if( !iterator.hasNext() ) {
+			return null;
+		}
 		return iterator.next();
 	}
 }
