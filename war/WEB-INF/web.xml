@@ -22,6 +22,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>SetNickname</servlet-name>
 		<url-pattern>/setnickname</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>AddDiningInfo</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.AddDiningInfoServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AddDiningInfo</servlet-name>
+		<url-pattern>/adddininginfo</url-pattern>
+	</servlet-mapping>
 	<!-- end of servlets -->
 	
 	<!-- start of example servlets -->

@@ -66,11 +66,6 @@ public class UserDAO {
 		Filter filter = new FilterPredicate( property, FilterOperator.EQUAL, value );
 		Query query = new Query( "user" ).setFilter( filter );
 		PreparedQuery pQuery = service.prepare( query );
-		Iterator< Entity > iterator = pQuery.asIterator();
-		if( !iterator.hasNext() ) {
-			return null;
-		}
-		Entity ee = iterator.next();
-		return ee;
+		return pQuery.asSingleEntity();
 	}
 }

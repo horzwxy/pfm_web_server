@@ -4,12 +4,18 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import me.horzwxy.app.pfm.model.Dining;
+import me.horzwxy.app.pfm.model.AddDiningInfoRequest;
+import me.horzwxy.app.pfm.model.User;
 
 public class AddDiningInfoServlet extends HttpServlet {
 	
@@ -17,15 +23,29 @@ public class AddDiningInfoServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		String restaurant = req.getParameter( "restaurant" );
-		DateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd-HH-mm" );
+		String restaurant = req.getParameter( AddDiningInfoRequest.RESTAURANT_KEY );
+		DateFormat formatter = Dining.dateFormat;
+		Date date = null;
 		try {
-			Date date = formatter.parse( req.getParameter( "date" ) );
+			date = formatter.parse( req.getParameter( AddDiningInfoRequest.DATE_KEY ) );
 		} catch (ParseException e) {
 			e.printStackTrace();
-			// TODO return error message
 		}
-		int cost = Integer.parseInt( req.getParameter( "cost" ) );
-		String[] participants = req.getParameter( "participants" ).split( ";" );
+		int cost = Integer.parseInt( req.getParameter( AddDiningInfoRequest.COST_KEY ) );
+		ArrayList< User > participants = Dining.getParticipantsFromString( req.getParameter( AddDiningInfoRequest.PARTICIPANTS_KEY ) );
+		Map< User, Integer > specialCosts = Dining.getUserCostPairFromString( req.getParameter( AddDiningInfoRequest.SPECIALCOSTS_KEY ) );
+		Map< User, Integer > paids = Dining.getUserCostPairFromString( req.getParameter( AddDiningInfoRequest.PAIDS_KEY ) );
+		User author = new User( null, req.getParameter( AddDiningInfoRequest.AUTHOR_KEY ) );
+		
+		Dining diningInfo = new Dining();
+		diningInfo.restaurant = restaurant;
+		diningInfo.date = date;
+		diningInfo.cost = cost;
+		diningInfo.participants = participants;
+		diningInfo.specialCosts = specialCosts;
+		diningInfo.paids = paids;
+		diningInfo.author = author;
+		
+		
 	}
 }
