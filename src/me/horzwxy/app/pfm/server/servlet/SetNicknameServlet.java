@@ -20,7 +20,12 @@ public class SetNicknameServlet extends HttpServlet {
 		String email = req.getParameter( SetNicknameRequest.EMAIL_KEY );
 		String nickname = req.getParameter( SetNicknameRequest.NICKNAME_KEY );
 		User user = new User( email, nickname );
-		UserDAO.updateUser( user );
+		if( UserDAO.getUserByNickname( nickname ) != null ) {
+			resp.getWriter().println( new SetNicknameResponse( SetNicknameResponse.SetNicknameResponseType.USED ).getPostContent() );
+		}
+		else {
+			UserDAO.updateUser( user );
+		}
 		
 		resp.getWriter().println( new SetNicknameResponse( SetNicknameResponse.SetNicknameResponseType.SUCCESS ).getPostContent() );
 	}

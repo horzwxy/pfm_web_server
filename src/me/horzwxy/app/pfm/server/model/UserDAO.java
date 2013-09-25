@@ -70,6 +70,7 @@ public class UserDAO {
 		if( !iterator.hasNext() ) {
 			return null;
 		}
-		return iterator.next();
+		Entity ee = iterator.next();
+		return ee;
 	}
 }
