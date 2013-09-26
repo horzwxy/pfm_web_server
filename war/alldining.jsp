@@ -28,11 +28,11 @@
 				<td><%=i %></td>
 				<td><%=diningList.get(i).id %></td>
 				<td><%=diningList.get(i).restaurant %></td>
-				<td><%=diningList.get(i).date %></td>
+				<td><%=Dining.dateFormat.format( diningList.get(i).date ) %></td>
 				<td><%=diningList.get(i).cost %></td>
-				<td><%=diningList.get(i).id %></td>
-				<td><%=diningList.get(i).id %></td>
-				<td><%=diningList.get(i).id %></td>
+				<td><%=diningList.get(i).participantsToString() %></td>
+				<td><%=diningList.get(i).userCostMapToString( diningList.get(i).specialCosts ) %></td>
+				<td><%=diningList.get(i).userCostMapToString( diningList.get(i).paids ) %></td>
 				<td><%=diningList.get(i).author.nickname %></td>
 				<td><%=diningList.get(i).state %></td>
 			</tr>
