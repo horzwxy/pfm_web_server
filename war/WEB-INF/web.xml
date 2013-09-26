@@ -39,6 +39,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
 		<servlet-name>ListContacts</servlet-name>
 		<url-pattern>/listcontacts</url-pattern>
+	</servlet-mapping>
 	
 	<servlet>
 		<servlet-name>AddContact</servlet-name>
@@ -87,6 +88,24 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
 		<servlet-name>ShowAllUser</servlet-name>
 		<url-pattern>/alluser</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ShowAllDining</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.admin.ShowAllDiningServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ShowAllDining</servlet-name>
+		<url-pattern>/alldining</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ShowAllContacts</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.admin.ShowAllContactsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ShowAllContacts</servlet-name>
+		<url-pattern>/allcontacts</url-pattern>
 	</servlet-mapping>
 	<!-- end of admin servlets -->
 	
