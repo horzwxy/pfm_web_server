@@ -23,7 +23,7 @@
 				<th>author</th>
 				<th>state</th>
 			</tr>
-			<%for( int i = 1; i < diningList.size(); i++ ){ %>
+			<%for( int i = 0; i < diningList.size(); i++ ){ %>
 			<tr>
 				<td><%=i %></td>
 				<td><%=diningList.get(i).id %></td>
