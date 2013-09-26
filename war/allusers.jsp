@@ -12,7 +12,7 @@
 		<table>
 			<tr><th>index</th><th>email</th><th>nickname</th></tr>
 			<%for( int i = 0; i < userList.size(); i++ ){ %>
-			<tr><td><%=i %></td><td><%=userList.get(i).email %></td><td><%=userList.get(i).nickname %></td>
+			<tr><td><%=i %></td><td><%=userList.get(i).email %></td><td><%=userList.get(i).nickname %></td></tr>
 			<%} %>
 		</table>
 	</body>

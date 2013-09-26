@@ -3,7 +3,6 @@ package me.horzwxy.app.pfm.server.servlet;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -16,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import me.horzwxy.app.pfm.model.Dining;
 import me.horzwxy.app.pfm.model.AddDiningInfoRequest;
 import me.horzwxy.app.pfm.model.User;
+
+import me.horzwxy.app.pfm.server.model.DiningDAO;
 
 public class AddDiningInfoServlet extends HttpServlet {
 	
@@ -33,8 +34,8 @@ public class AddDiningInfoServlet extends HttpServlet {
 		}
 		int cost = Integer.parseInt( req.getParameter( AddDiningInfoRequest.COST_KEY ) );
 		ArrayList< User > participants = Dining.getParticipantsFromString( req.getParameter( AddDiningInfoRequest.PARTICIPANTS_KEY ) );
-		Map< User, Integer > specialCosts = Dining.getUserCostPairFromString( req.getParameter( AddDiningInfoRequest.SPECIALCOSTS_KEY ) );
-		Map< User, Integer > paids = Dining.getUserCostPairFromString( req.getParameter( AddDiningInfoRequest.PAIDS_KEY ) );
+		Map< User, Integer > specialCosts = Dining.getUserCostMapFromString( req.getParameter( AddDiningInfoRequest.SPECIALCOSTS_KEY ) );
+		Map< User, Integer > paids = Dining.getUserCostMapFromString( req.getParameter( AddDiningInfoRequest.PAIDS_KEY ) );
 		User author = new User( null, req.getParameter( AddDiningInfoRequest.AUTHOR_KEY ) );
 		
 		Dining diningInfo = new Dining();
@@ -46,6 +47,6 @@ public class AddDiningInfoServlet extends HttpServlet {
 		diningInfo.paids = paids;
 		diningInfo.author = author;
 		
-		
+		DiningDAO.update( diningInfo );
 	}
 }

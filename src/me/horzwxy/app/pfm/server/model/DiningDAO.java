@@ -20,75 +20,25 @@ import me.horzwxy.app.pfm.model.User;
 
 public class DiningDAO {
 	
-//	public void updateDining( Dining diningInfo ) {
-//		Entity entity = getDiningById( diningInfo.id );
-//		if( entity == null ) {
-//			entity = new Entity( "dining" );
-//		}
-//		entity.setProperty( "id", diningInfo.id );
-//		entity.setProperty( "restaurant", diningInfo.restaurant );
-//		entity.setProperty( "date", diningInfo.date );
-//		entity.setProperty( "cost", diningInfo.cost );
-//		entity.setProperty( "participants", diningInfo.participants );
-//		entity.setProperty( "specialCosts", diningInfo.specialCosts );
-//		entity.setProperty( "paid", diningInfo.paids );
-//		entity.setProperty( "author", diningInfo.author );
-//		entity.setProperty( "state", diningInfo.state );
-//		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-//		service.put( entity );
-//	}
-	
-	public List< Dining > getDiningById( int id ) {
+	public static List< Dining > getAllDiningInfo() {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Filter filter = new FilterPredicate( "id", FilterOperator.EQUAL, id );
-		Query query = new Query( "dining" ).setFilter( filter );
+		Query query = new Query( "dining" );
 		PreparedQuery pQuery = service.prepare( query );
-		
-		List< Dining > result = new ArrayList< Dining >();
 		Iterator< Entity > iterator = pQuery.asIterator();
+		List< Dining > result = new ArrayList< Dining >();
 		while( iterator.hasNext() ) {
-			Entity entity = iterator.next();
-			Dining dining = new Dining( ( int )entity.getProperty( "id" ) );
-			dining.restaurant = ( String )entity.getProperty( "restaurant" );
-			dining.date = ( Date )entity.getProperty( "date" );
-			dining.cost = ( int )entity.getProperty( "cost" );
-			dining.participants = ( ArrayList< User > ) entity.getProperty( "participants" );
-			dining.specialCosts = ( Map< User, Integer > ) entity.getProperty( "specialCosts" );
-			dining.paids = ( Map< User, Integer > ) entity.getProperty( "paids" );
-			dining.author = ( User ) entity.getProperty( "author" );
-			dining.state = ( Dining.DiningInfoState ) entity.getProperty( "state" );
-			
-			result.add( dining );
+			result.add( createDining( iterator.next() ) );
 		}
 		return result;
 	}
 	
-	public List< Dining > getOnesDining( User user ) {
+	public static void update( Dining diningInfo ) {
+		Entity entity = createEntity( diningInfo );
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Filter filter = new FilterPredicate( "owner", FilterOperator.EQUAL, user.nickname );
-		Query query = new Query( "dining" ).setFilter( filter );
-		PreparedQuery pQuery = service.prepare( query );
-		
-		List< Dining > result = new ArrayList< Dining >();
-		Iterator< Entity > iterator = pQuery.asIterator();
-		while( iterator.hasNext() ) {
-			Entity entity = iterator.next();
-			Dining dining = new Dining( ( int )entity.getProperty( "id" ) );
-			dining.restaurant = ( String )entity.getProperty( "restaurant" );
-			dining.date = ( Date )entity.getProperty( "date" );
-			dining.cost = ( int )entity.getProperty( "cost" );
-			dining.participants = ( ArrayList< User > ) entity.getProperty( "participants" );
-			dining.specialCosts = ( Map< User, Integer > ) entity.getProperty( "specialCosts" );
-			dining.paids = ( Map< User, Integer > ) entity.getProperty( "paids" );
-			dining.author = ( User ) entity.getProperty( "author" );
-			dining.state = ( Dining.DiningInfoState ) entity.getProperty( "state" );
-			
-			result.add( dining );
-		}
-		return result;
+		service.put( entity );
 	}
-
-	public void createAndDistribute( Dining diningInfo ) {
+	
+	private static Entity createEntity( Dining diningInfo ) {
 		Entity entity = new Entity( "dining" );
 		
 		entity.setProperty( "id", diningInfo.id );
@@ -101,29 +51,19 @@ public class DiningDAO {
 		entity.setProperty( "author", diningInfo.author );
 		entity.setProperty( "state", diningInfo.state );
 		
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		service.put( entity );
-		
-		for( User user : diningInfo.participants ) {
-			distribute( diningInfo, user );
-		}
+		return entity;
 	}
 	
-	private void distribute( Dining diningInfo, User user ) {
-		Entity entity = new Entity( "dining" );
-		
-		entity.setProperty( "owner", user.nickname );
-		entity.setProperty( "id", diningInfo.id );
-		entity.setProperty( "restaurant", diningInfo.restaurant );
-		entity.setProperty( "date", diningInfo.date );
-		entity.setProperty( "cost", diningInfo.cost );
-		entity.setProperty( "participants", diningInfo.participants );
-		entity.setProperty( "specialCosts", diningInfo.specialCosts );
-		entity.setProperty( "paid", diningInfo.paids );
-		entity.setProperty( "author", diningInfo.author );
-		entity.setProperty( "state", diningInfo.state );
-		
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		service.put( entity );
+	private static Dining createDining( Entity entity ) {
+		Dining dining = new Dining( ( int )entity.getProperty( "id" ) );
+		dining.restaurant = ( String )entity.getProperty( "restaurant" );
+		dining.date = ( Date )entity.getProperty( "date" );
+		dining.cost = ( int )entity.getProperty( "cost" );
+		dining.participants = ( ArrayList< User > ) entity.getProperty( "participants" );
+		dining.specialCosts = ( Map< User, Integer > ) entity.getProperty( "specialCosts" );
+		dining.paids = ( Map< User, Integer > ) entity.getProperty( "paids" );
+		dining.author = ( User ) entity.getProperty( "author" );
+		dining.state = ( Dining.DiningInfoState ) entity.getProperty( "state" );
+		return dining;
 	}
 }
