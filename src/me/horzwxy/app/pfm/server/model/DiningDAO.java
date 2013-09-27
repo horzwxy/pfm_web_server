@@ -41,29 +41,29 @@ public class DiningDAO {
 	private static Entity createEntity( Dining diningInfo ) {
 		Entity entity = new Entity( "dining" );
 		
-		entity.setProperty( "id", diningInfo.id );
+		entity.setProperty( "id", ( int )diningInfo.id );
 		entity.setProperty( "restaurant", diningInfo.restaurant );
 		entity.setProperty( "date", diningInfo.date );
 		entity.setProperty( "cost", diningInfo.cost );
-		entity.setProperty( "participants", diningInfo.participants );
-		entity.setProperty( "specialCosts", diningInfo.specialCosts );
-		entity.setProperty( "paid", diningInfo.paids );
-		entity.setProperty( "author", diningInfo.author );
-		entity.setProperty( "state", diningInfo.state );
+		entity.setProperty( "participants", diningInfo.participantsToString() );
+		entity.setProperty( "specialCosts", diningInfo.userCostMapToString( diningInfo.specialCosts ) );
+		entity.setProperty( "paid", diningInfo.userCostMapToString( diningInfo.paids ) );
+		entity.setProperty( "author", diningInfo.author.nickname );
+		entity.setProperty( "state", diningInfo.state.toString() );
 		
 		return entity;
 	}
 	
 	private static Dining createDining( Entity entity ) {
-		Dining dining = new Dining( ( int )entity.getProperty( "id" ) );
+		Dining dining = new Dining( ( ( Long )entity.getProperty( "id" ) ).intValue() );
 		dining.restaurant = ( String )entity.getProperty( "restaurant" );
 		dining.date = ( Date )entity.getProperty( "date" );
-		dining.cost = ( int )entity.getProperty( "cost" );
-		dining.participants = ( ArrayList< User > ) entity.getProperty( "participants" );
-		dining.specialCosts = ( Map< User, Integer > ) entity.getProperty( "specialCosts" );
-		dining.paids = ( Map< User, Integer > ) entity.getProperty( "paids" );
-		dining.author = ( User ) entity.getProperty( "author" );
-		dining.state = ( Dining.DiningInfoState ) entity.getProperty( "state" );
+		dining.cost = ( ( Long )entity.getProperty( "cost" ) ).intValue();
+		dining.participants = ( ArrayList< User > ) Dining.getParticipantsFromString( ( String )entity.getProperty( "participants" ) );
+		dining.specialCosts = ( Map< User, Integer > ) Dining.getUserCostMapFromString( ( String )entity.getProperty( "specialCosts" ) );
+		dining.paids = ( Map< User, Integer > ) Dining.getUserCostMapFromString( ( String ) entity.getProperty( "paids" ) );
+		dining.author = new User( null, ( String )entity.getProperty( "author" ) );
+		dining.state = Dining.DiningInfoState.valueOf( ( String )entity.getProperty( "state" ) );
 		return dining;
 	}
 }

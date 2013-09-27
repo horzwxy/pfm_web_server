@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import me.horzwxy.app.pfm.model.AddDiningInfoResponse;
+import me.horzwxy.app.pfm.model.AddDiningInfoResponse.AddDiningInfoType;
 import me.horzwxy.app.pfm.model.Dining;
 import me.horzwxy.app.pfm.model.AddDiningInfoRequest;
 import me.horzwxy.app.pfm.model.User;
@@ -48,5 +50,7 @@ public class AddDiningInfoServlet extends HttpServlet {
 		diningInfo.author = author;
 		
 		DiningDAO.update( diningInfo );
+		
+		resp.getWriter().println( new AddDiningInfoResponse( AddDiningInfoType.SUCCESS ).getPostContent() );
 	}
 }
