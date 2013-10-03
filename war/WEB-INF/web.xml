@@ -24,12 +24,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet-mapping>
 	
 	<servlet>
-		<servlet-name>AddDiningInfo</servlet-name>
-		<servlet-class>me.horzwxy.app.pfm.server.servlet.AddDiningInfoServlet</servlet-class>
+		<servlet-name>AddDining</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.AddDiningServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>AddDiningInfo</servlet-name>
-		<url-pattern>/adddininginfo</url-pattern>
+		<servlet-name>AddDining</servlet-name>
+		<url-pattern>/adddining</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>

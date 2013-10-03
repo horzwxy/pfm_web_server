@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="me.horzwxy.app.pfm.model.User" %>
-<%@ page import="me.horzwxy.app.pfm.model.Dining" %>
+<%@ page import="me.horzwxy.app.pfm.model.data.User" %>
+<%@ page import="me.horzwxy.app.pfm.model.data.Dining" %>
 <%
 	List< Dining > diningList = (List< Dining >) request.getAttribute( "diningList" );
+System.out.println( diningList );
 %>
 <html>
 	<head>
@@ -27,12 +28,12 @@
 			<tr>
 				<td><%=i %></td>
 				<td><%=diningList.get(i).id %></td>
-				<td><%=diningList.get(i).restaurant %></td>
-				<td><%=Dining.dateFormat.format( diningList.get(i).date ) %></td>
-				<td><%=diningList.get(i).cost %></td>
-				<td><%=diningList.get(i).participantsToString() %></td>
-				<td><%=diningList.get(i).userCostMapToString( diningList.get(i).specialCosts ) %></td>
-				<td><%=diningList.get(i).userCostMapToString( diningList.get(i).paids ) %></td>
+				<td><%=diningList.get(i).restaurant.name %></td>
+				<td><%=diningList.get(i).date.toString() %></td>
+				<td><%=diningList.get(i).cost.cost %></td>
+				<td><%=diningList.get(i).participants.toJsonString() %></td>
+				<td>"xx"</td>
+				<td>"xx"</td>
 				<td><%=diningList.get(i).author.nickname %></td>
 				<td><%=diningList.get(i).state %></td>
 			</tr>

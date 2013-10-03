@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="me.horzwxy.app.pfm.model.User" %>
+<%@ page import="me.horzwxy.app.pfm.model.data.User" %>
 <%
 	List< User > userList = (List< User >) request.getAttribute( "userList" );
 %>
@@ -10,9 +10,9 @@
 	</head>
 	<body>
 		<table>
-			<tr><th>index</th><th>email</th><th>nickname</th></tr>
+			<tr><th>index</th><th>account name</th><th>nickname</th><th>account type</th></tr>
 			<%for( int i = 0; i < userList.size(); i++ ){ %>
-			<tr><td><%=i %></td><td><%=userList.get(i).email %></td><td><%=userList.get(i).nickname %></td></tr>
+			<tr><td><%=i %></td><td><%=userList.get(i).accountName %></td><td><%=userList.get(i).nickname %></td><td><%=userList.get(i).accountType %></td></tr>
 			<%} %>
 		</table>
 	</body>

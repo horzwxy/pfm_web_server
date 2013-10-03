@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="me.horzwxy.app.pfm.model.ContactInfo" %>
+<%@ page import="me.horzwxy.app.pfm.model.data.ContactInfo" %>
 <%
 	List< ContactInfo > contactList = (List< ContactInfo >) request.getAttribute( "contactsList" );
 %>
@@ -10,7 +10,7 @@
 	</head>
 	<body>
 		<table>
-			<tr><th>index</th><th>email</th><th>nickname</th></tr>
+			<tr><th>index</th><th>owner</th><th>nickname</th></tr>
 			<%for( int i = 0; i < contactList.size(); i++ ){ %>
 			<tr>
 				<td><%=i %></td>

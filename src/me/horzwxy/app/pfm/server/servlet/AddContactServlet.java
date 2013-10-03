@@ -3,34 +3,36 @@ package me.horzwxy.app.pfm.server.servlet;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import me.horzwxy.app.pfm.model.AddContactRequest;
-import me.horzwxy.app.pfm.model.AddContactResponse;
-import me.horzwxy.app.pfm.model.AddContactResponse.AddContactResponseType;
-import me.horzwxy.app.pfm.model.ContactInfo;
-import me.horzwxy.app.pfm.model.User;
+import me.horzwxy.app.pfm.model.communication.AddContactRequest;
+import me.horzwxy.app.pfm.model.communication.AddContactResponse;
+import me.horzwxy.app.pfm.model.data.ContactInfo;
+import me.horzwxy.app.pfm.model.data.User;
 import me.horzwxy.app.pfm.server.model.ContactDAO;
 import me.horzwxy.app.pfm.server.model.UserDAO;
 
-public class AddContactServlet extends HttpServlet {
+public class AddContactServlet extends PFMServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		String owner = req.getParameter( AddContactRequest.OWNER_KEY );
-		String friend = req.getParameter( AddContactRequest.FRIEND_KEY );
-		User userFriend = UserDAO.getUserByNickname( friend );
-		if( userFriend == null ) {
-			resp.getWriter().println( new AddContactResponse( AddContactResponseType.NO_SUCH_USER ).getPostContent() );
+		AddContactRequest request = getRequest( req, AddContactRequest.class );
+		System.out.println( request );
+		User friend = UserDAO.getUser( request.friendNickname );
+		AddContactResponse response = null;
+		if( friend == null ) {
+			response = new AddContactResponse( AddContactResponse.ResultType.NO_SUCH_USER );
 		}
 		else {
-			ContactInfo info = new ContactInfo( 
-					new User( null, owner ), new User( null, friend ) );
-			ContactDAO.update( info );
-			resp.getWriter().println( new AddContactResponse( AddContactResponseType.SUCCESS ).getPostContent() );
+			User owner = UserDAO.getUser( request.ownerNickname );
+			ContactInfo contact = new ContactInfo( owner, friend );
+			ContactDAO.update( contact );
+			response = new AddContactResponse( AddContactResponse.ResultType.SUCCESS );
 		}
+
+		System.out.println( response );
+		resp.getWriter().println( response.toPostContent() );
 	}
 }
