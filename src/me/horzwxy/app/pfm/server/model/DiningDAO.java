@@ -15,10 +15,52 @@ import me.horzwxy.app.pfm.model.data.UserList;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 public class DiningDAO {
+	
+	public static ArrayList< Dining > getOnesDinings( User user ) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		Query query = new Query( "diningApproval" ).setAncestor( UserDAO.getKey( user ) );
+		PreparedQuery pQuery = service.prepare( query );
+		Iterator< Entity > iterator = pQuery.asIterator();
+		ArrayList< Dining > dinings = new ArrayList< Dining >();
+		while( iterator.hasNext() ) {
+			Entity entity = iterator.next();
+			long diningId = entity.getKey().getId();
+			Dining dining = getDining( diningId );
+			dinings.add( dining );
+		}
+		return dinings;
+	}
+	
+	public static Dining getDining( long diningId ) {
+		return createDining( getEntity( diningId ) );
+	}
+	
+	private static Entity getEntity( long id ) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		Key key = KeyFactory.createKey( "dining", id );
+		Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
+                Query.FilterOperator.EQUAL,
+                key );
+		Query query = new Query( "dining" ).setFilter( filter );
+		PreparedQuery pQuery = service.prepare( query );
+		return pQuery.asSingleEntity();
+	}
+	
+	public static Key getKey( long id ) {
+		Entity entity = getEntity( id );
+		if( entity == null ) {
+			return null;
+		}
+		return entity.getKey();
+	}
 	
 	public static List< Dining > getAllDiningInfo() {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
@@ -32,19 +74,16 @@ public class DiningDAO {
 		return result;
 	}
 	
-	public static void update( Dining diningInfo ) {
+	public static int update( Dining diningInfo ) {
 		Entity entity = createEntity( diningInfo );	// always create new dining, no need to search
-		if( diningInfo.id == -1 ) {
-			entity.setProperty( "id", getAvailableId() );
-		}
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		service.put( entity );
+		return ( int )entity.getKey().getId();
 	}
 	
 	private static Entity createEntity( Dining diningInfo ) {
-		Entity entity = new Entity( "dining" );
+		Entity entity = new Entity( "dining", getAvailableId() );
 		
-		entity.setProperty( "id", ( int )diningInfo.id );
 		entity.setProperty( "restaurant", diningInfo.restaurant.name );
 		entity.setProperty( "date", diningInfo.date );
 		entity.setProperty( "cost", diningInfo.cost.cost );
@@ -59,7 +98,7 @@ public class DiningDAO {
 	
 	private static Dining createDining( Entity entity ) {
 		Dining dining = new Dining();
-		dining.id = ( ( Long )entity.getProperty( "id" ) ).intValue();
+		dining.id = ( ( Long )entity.getKey().getId() ).intValue();
 		dining.restaurant = new Restaurant( ( String )entity.getProperty( "restaurant" ) );
 		dining.date = ( Date )entity.getProperty( "date" );
 		dining.cost = new Cost( ( ( Long )entity.getProperty( "cost" ) ).intValue() );
@@ -73,18 +112,22 @@ public class DiningDAO {
 	
 	private static int getAvailableId() {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Query query = new Query( "diningId" );
+		Key key = KeyFactory.createKey( "diningId", 1 );
+		Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
+                Query.FilterOperator.EQUAL,
+                key );
+		Query query = new Query( "diningId" ).setFilter( filter );
 		PreparedQuery pQuery = service.prepare( query );
+		int id = 1;
 		Entity entity = pQuery.asSingleEntity();
 		if( entity == null ) {
-			entity = new Entity( "diningId" );
-			entity.setProperty( "value", 1 );
-			service.put( entity );
-			return 1;
+			entity = new Entity( "diningId", 1 );
 		}
-		int id = ( ( Long )entity.getProperty( "value" ) ).intValue();
-		entity.setProperty( "value", ++id );
+		else {
+			id = ( ( Long )entity.getProperty( "value" ) ).intValue();
+		}
+		entity.setProperty( "value", id + 1 );
 		service.put( entity );
-		return --id;
+		return id;
 	}
 }

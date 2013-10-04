@@ -19,7 +19,6 @@ public class AddContactServlet extends PFMServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		AddContactRequest request = getRequest( req, AddContactRequest.class );
-		System.out.println( request );
 		User friend = UserDAO.getUser( request.friendNickname );
 		AddContactResponse response = null;
 		if( friend == null ) {
@@ -31,8 +30,6 @@ public class AddContactServlet extends PFMServlet {
 			ContactDAO.update( contact );
 			response = new AddContactResponse( AddContactResponse.ResultType.SUCCESS );
 		}
-
-		System.out.println( response );
 		resp.getWriter().println( response.toPostContent() );
 	}
 }

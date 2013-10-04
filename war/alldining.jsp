@@ -4,7 +4,6 @@
 <%@ page import="me.horzwxy.app.pfm.model.data.Dining" %>
 <%
 	List< Dining > diningList = (List< Dining >) request.getAttribute( "diningList" );
-System.out.println( diningList );
 %>
 <html>
 	<head>

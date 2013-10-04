@@ -9,6 +9,8 @@ import me.horzwxy.app.pfm.model.data.User;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
@@ -31,11 +33,16 @@ public class UserDAO {
 		return result;
 	}
 	
-	public static void updateUser( User user ) {
+	public static Key getKey( User user ) {
 		Entity entity = getEntity( user );
 		if( entity == null ) {
-			entity = createEntity( user );
+			return null;
 		}
+		return entity.getKey();
+	}
+	
+	public static void updateUser( User user ) {
+		Entity entity = createEntity( user );
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		service.put( entity );
 	}
@@ -52,7 +59,8 @@ public class UserDAO {
  	
 	private static Entity getEntity( String nickname ) {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Filter filter = new FilterPredicate( "nickname", FilterOperator.EQUAL, nickname );
+		Key key = KeyFactory.createKey( "user", nickname );
+		Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, key );
 		Query query = new Query( "user" ).setFilter( filter );
 		PreparedQuery pQuery = service.prepare( query );
 		return pQuery.asSingleEntity();
@@ -69,23 +77,15 @@ public class UserDAO {
 	}
 	
 	private static Entity getEntity( User user ) {
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Filter filter1 = new FilterPredicate( "accountName", FilterOperator.EQUAL, user.accountName );
-		Filter filter2 = new FilterPredicate( "accountType", FilterOperator.EQUAL, user.accountType );
-		Filter filter3 = new FilterPredicate( "nickname", FilterOperator.EQUAL, user.nickname );
-		Filter comFilter = CompositeFilterOperator.and(filter1, filter2, filter3);
-		Query query = new Query( "user" ).setFilter( comFilter );
-		PreparedQuery pQuery = service.prepare( query );
-		return pQuery.asSingleEntity();
+		return getEntity( user.nickname );
 	}
 	
 	private static Entity createEntity( User user ) {
 		if( user == null ) {
 			return null;
 		}
-		Entity entity = new Entity( "user" );
+		Entity entity = new Entity( "user", user.nickname );
 		entity.setProperty( "accountName", user.accountName );
-		entity.setProperty( "nickname", user.nickname );
 		entity.setProperty( "accountType", user.accountType );
 		return entity;
 	}
@@ -95,7 +95,7 @@ public class UserDAO {
 			return null;
 		}
 		return new User( (String)entity.getProperty( "accountName" ),
-				(String)entity.getProperty( "nickname" ),
+				entity.getKey().getName(),
 				(String)entity.getProperty( "accountType" ) );
 	}
 }

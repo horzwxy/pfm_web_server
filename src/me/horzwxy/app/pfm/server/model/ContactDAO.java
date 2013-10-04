@@ -11,12 +11,12 @@ import me.horzwxy.app.pfm.model.data.UserList;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 
 public class ContactDAO {
 
@@ -26,32 +26,49 @@ public class ContactDAO {
 		service.put( entity );
 	}
 	
-	public static Entity createEntity( ContactInfo info ) {
-		Entity entity = new Entity( "contact" );
-		entity.setProperty( "owner", info.owner.nickname );
-		entity.setProperty( "friend", info.friend.nickname );
+	private static Entity createEntity( ContactInfo info ) {
+		Key userKey = UserDAO.getKey( info.owner );
+		Entity entity = new Entity( "contact", info.friend.nickname, userKey );
 		return entity;
 	}
 	
-	public static Entity getEntity( ContactInfo info ) {
+	private static ContactInfo createContactInfo( Entity entity ) {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Filter filter1 = new FilterPredicate( "owner", FilterOperator.EQUAL, info.owner.nickname );
-		Filter filter2 = new FilterPredicate( "friend", FilterOperator.EQUAL, info.friend.nickname );
-		Filter andFilter =
-				  CompositeFilterOperator.and( filter1, filter2 );
-		Query query = new Query( "contact" ).setFilter( andFilter );
+		Query query = new Query( "user" ).setAncestor( entity.getParent() );
+		PreparedQuery pQuery = service.prepare( query );
+		ContactInfo contact = new ContactInfo( 
+				new User( pQuery.asSingleEntity().getKey().getName() ), 
+				createUser( entity ) );
+		return contact;
+	}
+	
+	private static Entity getEntity( ContactInfo info ) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		Key ownerKey = UserDAO.getKey( info.owner );
+		if( ownerKey == null ) {
+			return null;
+		}
+		Key key = KeyFactory.createKey( "contact", info.friend.nickname );
+		Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
+                          Query.FilterOperator.EQUAL,
+                          key );
+		Query query = new Query( "contact" ).setAncestor( ownerKey ).setFilter( filter );
 		PreparedQuery pQuery = service.prepare( query );
 		return pQuery.asSingleEntity();
+	}
+	
+	private static User createUser( Entity contactEntity ) {
+		return new User( contactEntity.getKey().getName() );
 	}
 	
 	public static UserList getOnesContacts( User user ) {
 		UserList result = new UserList();
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Filter filter = new FilterPredicate( "owner", FilterOperator.EQUAL, user.nickname );
-		Query query = new Query( "contact" ).setFilter( filter );
+		Query query = new Query( "contact" ).setAncestor( UserDAO.getKey( user ) );
 		PreparedQuery pQuery = service.prepare( query );
-		for( Entity entity : pQuery.asIterable() ) {
-			result.add( new User( ( String )entity.getProperty( "friend" ) ) );
+		Iterable< Entity > iterable = pQuery.asIterable();
+		for( Entity entity : iterable ) {
+			result.add( createUser( entity ) );
 		}
 		return result;
 	}
@@ -64,10 +81,7 @@ public class ContactDAO {
 		List< ContactInfo > result = new ArrayList< ContactInfo >();
 		while( iterator.hasNext() ) {
 			Entity entity = iterator.next();
-			ContactInfo contact = new ContactInfo( 
-					new User( (String)entity.getProperty( "owner" ) ), 
-					new User( (String)entity.getProperty( "friend" ) ) );
-			result.add( contact );
+			result.add( createContactInfo( entity ) );
 		}
 		return result;
 	}

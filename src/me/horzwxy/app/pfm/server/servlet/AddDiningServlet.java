@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import me.horzwxy.app.pfm.model.communication.AddDiningRequest;
 import me.horzwxy.app.pfm.model.communication.AddDiningResponse;
 import me.horzwxy.app.pfm.model.data.Dining;
+import me.horzwxy.app.pfm.server.model.DiningApprovalDAO;
 import me.horzwxy.app.pfm.server.model.DiningDAO;
 
 public class AddDiningServlet extends PFMServlet {
@@ -19,7 +20,9 @@ public class AddDiningServlet extends PFMServlet {
 		
 		AddDiningRequest request = getRequest( req, AddDiningRequest.class );
 		Dining dining = request.dining;
-		DiningDAO.update( dining );
+		dining.id = DiningDAO.update( dining );
+		System.out.println( dining.id );
+		DiningApprovalDAO.distribute( dining );
 		AddDiningResponse response = new AddDiningResponse( AddDiningResponse.ResultType.SUCCESS );
 		resp.getWriter().println( response.toPostContent() );
 	}

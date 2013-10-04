@@ -21,10 +21,8 @@ public class ListContactsServlet extends PFMServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		ListContactsRequest request = getRequest( req, ListContactsRequest.class );
-		System.out.println( request );
 		UserList list = ContactDAO.getOnesContacts( new User( request.nickname ) );
 		ListContactsResponse response = new ListContactsResponse( list );
-		System.out.println( response );
 		resp.getWriter().println( response.toPostContent() );
 	}
 

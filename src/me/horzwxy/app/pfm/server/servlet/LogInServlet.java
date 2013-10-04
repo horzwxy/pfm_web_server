@@ -18,9 +18,7 @@ public class LogInServlet extends PFMServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		LogInRequest request = getRequest( req, LogInRequest.class );
-		System.out.println( request );
 		User user = UserDAO.getUser( request.accountName, request.accountType );
-		System.out.println( user );
 		LogInResponse response = null;
 		if( user == null ) {
 			response = new LogInResponse( LogInResponse.ResultType.SUCCESS_BUT_FIRST, null );
@@ -28,7 +26,6 @@ public class LogInServlet extends PFMServlet {
 		else {
 			response = new LogInResponse( LogInResponse.ResultType.SUCCESS, user.nickname );
 		}
-		System.out.println( response );
 		resp.getWriter().println( response.toPostContent() );
 	}
 }

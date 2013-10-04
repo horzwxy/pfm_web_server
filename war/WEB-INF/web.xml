@@ -33,6 +33,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet-mapping>
 	
 	<servlet>
+		<servlet-name>ListDinings</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.ListDiningsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ListDinings</servlet-name>
+		<url-pattern>/listdinings</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>ListContacts</servlet-name>
 		<servlet-class>me.horzwxy.app.pfm.server.servlet.ListContactsServlet</servlet-class>
 	</servlet>
@@ -106,6 +115,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
 		<servlet-name>ShowAllContacts</servlet-name>
 		<url-pattern>/allcontacts</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ShowAllDasServlet</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.admin.ShowAllDasServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ShowAllDasServlet</servlet-name>
+		<url-pattern>/alldas</url-pattern>
 	</servlet-mapping>
 	<!-- end of admin servlets -->
 	
