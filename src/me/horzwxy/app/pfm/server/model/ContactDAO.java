@@ -12,11 +12,8 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 public class ContactDAO {
 
@@ -40,21 +37,6 @@ public class ContactDAO {
 				new User( pQuery.asSingleEntity().getKey().getName() ), 
 				createUser( entity ) );
 		return contact;
-	}
-	
-	private static Entity getEntity( ContactInfo info ) {
-		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Key ownerKey = UserDAO.getKey( info.owner );
-		if( ownerKey == null ) {
-			return null;
-		}
-		Key key = KeyFactory.createKey( "contact", info.friend.nickname );
-		Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
-                          Query.FilterOperator.EQUAL,
-                          key );
-		Query query = new Query( "contact" ).setAncestor( ownerKey ).setFilter( filter );
-		PreparedQuery pQuery = service.prepare( query );
-		return pQuery.asSingleEntity();
 	}
 	
 	private static User createUser( Entity contactEntity ) {

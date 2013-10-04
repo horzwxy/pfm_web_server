@@ -17,11 +17,9 @@ public class AddDiningServlet extends PFMServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
 		AddDiningRequest request = getRequest( req, AddDiningRequest.class );
 		Dining dining = request.dining;
 		dining.id = DiningDAO.update( dining );
-		System.out.println( dining.id );
 		DiningApprovalDAO.distribute( dining );
 		AddDiningResponse response = new AddDiningResponse( AddDiningResponse.ResultType.SUCCESS );
 		resp.getWriter().println( response.toPostContent() );

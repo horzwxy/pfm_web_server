@@ -67,10 +67,10 @@ public class DiningApprovalDAO {
 		DiningState state = DiningState.valueOf( (String)entity.getProperty( "state" ) );
 		// if id is diningId
 		if( thisKey.getName() == null ) {
-			return new DiningApproval( ( int )thisKey.getId(), new User( parentKey.getName() ), state );
+			return new DiningApproval( thisKey.getId(), new User( parentKey.getName() ), state );
 		}
 		else {
-			return new DiningApproval( ( int )parentKey.getId(), new User( thisKey.getName() ), state );
+			return new DiningApproval( parentKey.getId(), new User( thisKey.getName() ), state );
 		}
 	}
 	
@@ -81,6 +81,8 @@ public class DiningApprovalDAO {
 			DiningApproval da = new DiningApproval( dining.id, user, DiningState.NOT_APPROVED_YET );
 			Entity entityUnderUser = createEntity( dining.id, da );
 			Entity entityUnderDining = createEntity( user, da );
+			service.put( entityUnderUser );
+			service.put( entityUnderDining );
 		}
 	}
 	

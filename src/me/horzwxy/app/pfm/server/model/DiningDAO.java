@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import me.horzwxy.app.pfm.model.data.Cost;
+import me.horzwxy.app.pfm.model.data.CostList;
 import me.horzwxy.app.pfm.model.data.Dining;
 import me.horzwxy.app.pfm.model.data.Restaurant;
 import me.horzwxy.app.pfm.model.data.User;
-import me.horzwxy.app.pfm.model.data.UserCostMap;
 import me.horzwxy.app.pfm.model.data.UserList;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -74,11 +74,11 @@ public class DiningDAO {
 		return result;
 	}
 	
-	public static int update( Dining diningInfo ) {
+	public static long update( Dining diningInfo ) {
 		Entity entity = createEntity( diningInfo );	// always create new dining, no need to search
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		service.put( entity );
-		return ( int )entity.getKey().getId();
+		return entity.getKey().getId();
 	}
 	
 	public static void update( Dining diningInfo, Dining.DiningState newState ) {
@@ -95,7 +95,7 @@ public class DiningDAO {
 		entity.setProperty( "cost", diningInfo.cost.cost );
 		entity.setProperty( "participants", diningInfo.participants.toJsonString() );
 		entity.setProperty( "specialCosts", diningInfo.specialCosts.toJsonString() );
-		entity.setProperty( "paid", diningInfo.paids.toJsonString() );
+		entity.setProperty( "paids", diningInfo.paids.toJsonString() );
 		entity.setProperty( "author", diningInfo.author.nickname );
 		entity.setProperty( "state", diningInfo.state.toString() );
 		
@@ -104,19 +104,19 @@ public class DiningDAO {
 	
 	private static Dining createDining( Entity entity ) {
 		Dining dining = new Dining();
-		dining.id = ( ( Long )entity.getKey().getId() ).intValue();
+		dining.id = entity.getKey().getId();
 		dining.restaurant = new Restaurant( ( String )entity.getProperty( "restaurant" ) );
 		dining.date = ( Date )entity.getProperty( "date" );
-		dining.cost = new Cost( ( ( Long )entity.getProperty( "cost" ) ).intValue() );
+		dining.cost = new Cost( ( ( Long )entity.getProperty( "cost" ) ).intValue(), null );
 		dining.participants = UserList.fromJsonString( ( String )entity.getProperty( "participants" ) );
-		dining.specialCosts = UserCostMap.fromJsonString( ( String )entity.getProperty( "specialCosts" ) );
-		dining.paids = UserCostMap.fromJsonString( ( String ) entity.getProperty( "paids" ) );
+		dining.specialCosts = CostList.fromJsonString( ( String )entity.getProperty( "specialCosts" ) );
+		dining.paids = CostList.fromJsonString( ( String ) entity.getProperty( "paids" ) );
 		dining.author = new User( ( String )entity.getProperty( "author" ) );
 		dining.state = Dining.DiningState.valueOf( ( String )entity.getProperty( "state" ) );
 		return dining;
 	}
 	
-	private static int getAvailableId() {
+	private static long getAvailableId() {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		Key key = KeyFactory.createKey( "diningId", 1 );
 		Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
@@ -124,13 +124,13 @@ public class DiningDAO {
                 key );
 		Query query = new Query( "diningId" ).setFilter( filter );
 		PreparedQuery pQuery = service.prepare( query );
-		int id = 1;
+		long id = 1l;
 		Entity entity = pQuery.asSingleEntity();
 		if( entity == null ) {
 			entity = new Entity( "diningId", 1 );
 		}
 		else {
-			id = ( ( Long )entity.getProperty( "value" ) ).intValue();
+			id = (long)entity.getProperty( "value" );
 		}
 		entity.setProperty( "value", id + 1 );
 		service.put( entity );

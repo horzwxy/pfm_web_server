@@ -31,8 +31,8 @@
 				<td><%=diningList.get(i).date.toString() %></td>
 				<td><%=diningList.get(i).cost.cost %></td>
 				<td><%=diningList.get(i).participants.toJsonString() %></td>
-				<td>"xx"</td>
-				<td>"xx"</td>
+				<td><%=diningList.get(i).specialCosts.toJsonString() %></td>
+				<td><%=diningList.get(i).paids.toJsonString() %></td>
 				<td><%=diningList.get(i).author.nickname %></td>
 				<td><%=diningList.get(i).state %></td>
 			</tr>
