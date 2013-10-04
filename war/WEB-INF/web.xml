@@ -58,6 +58,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>AddContact</servlet-name>
 		<url-pattern>/addcontact</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ApproveDining</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.ApproveDiningServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ApproveDining</servlet-name>
+		<url-pattern>/approvedining</url-pattern>
+	</servlet-mapping>
 	<!-- end of servlets -->
 	
 	<!-- start of example servlets -->

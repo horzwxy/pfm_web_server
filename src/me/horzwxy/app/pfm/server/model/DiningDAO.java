@@ -81,6 +81,12 @@ public class DiningDAO {
 		return ( int )entity.getKey().getId();
 	}
 	
+	public static void update( Dining diningInfo, Dining.DiningState newState ) {
+		Entity entity = getEntity( diningInfo.id );
+		entity.setProperty( "state", newState.toString() );
+		DatastoreServiceFactory.getDatastoreService().put( entity );
+	}
+	
 	private static Entity createEntity( Dining diningInfo ) {
 		Entity entity = new Entity( "dining", getAvailableId() );
 		

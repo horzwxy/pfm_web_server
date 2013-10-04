@@ -21,6 +21,34 @@ import me.horzwxy.app.pfm.model.data.UserList;
 
 public class DiningApprovalDAO {
 	
+	public static Dining.DiningState checkState( Dining dining ) {
+		ArrayList< DiningApproval > list = getDaForOneDining( dining );
+		Dining.DiningState newState = Dining.DiningState.APPROVED;
+		for( DiningApproval da : list ) {
+			if( da.state == Dining.DiningState.REJECTED ) {
+				newState = Dining.DiningState.REJECTED;
+				break;
+			}
+			else if( da.state == Dining.DiningState.NOT_APPROVED_YET ) {
+				newState = Dining.DiningState.NOT_APPROVED_YET;
+			}
+		}
+		return newState;
+	}
+	
+	private static ArrayList< DiningApproval > getDaForOneDining( Dining dining ) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		Key diningKey = KeyFactory.createKey( "dining", dining.id );
+		Query query = new Query( "diningApproval" ).setAncestor( diningKey );
+		PreparedQuery pQuery = service.prepare( query );
+		ArrayList< DiningApproval > result = new ArrayList< DiningApproval >();
+		Iterator< Entity> iterator = pQuery.asIterator();
+		while( iterator.hasNext() ) {
+			result.add( createDa( iterator.next() ) );
+		}
+		return result;
+	}
+	
 	public static ArrayList< DiningApproval > getAllDas() {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		Query query = new Query( "diningApproval" );
@@ -51,19 +79,16 @@ public class DiningApprovalDAO {
 		UserList list = dining.participants;
 		for( User user : list ) {
 			DiningApproval da = new DiningApproval( dining.id, user, DiningState.NOT_APPROVED_YET );
-			Entity entityUnderUser = createEntity( user, da );
-			System.out.println( "user = " + user.nickname + " diningId = " + da.diningId );
-			System.out.println( "under user id =" + service.put( entityUnderUser ) );
-			Entity entityUnderDining = createEntity( dining.id, da );
-			System.out.println( "under dining name = " + service.put( entityUnderDining ) );
+			Entity entityUnderUser = createEntity( dining.id, da );
+			Entity entityUnderDining = createEntity( user, da );
 		}
 	}
 	
 	public static void update( DiningApproval da ) {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Entity entityUnderUser = getEntity( da.user.nickname, da );
+		Entity entityUnderUser = getEntity( da.diningId, da );
 		entityUnderUser.setProperty( "state", da.state.toString() );
-		Entity entityUnderDining = getEntity( da.diningId, da );
+		Entity entityUnderDining = getEntity( da.user.nickname, da );
 		entityUnderDining.setProperty( "state", da.state.toString() );
 		service.put( entityUnderUser );
 		service.put( entityUnderDining );
@@ -77,11 +102,11 @@ public class DiningApprovalDAO {
 	 */
 	private static Entity getEntity( String nickname, DiningApproval da ) {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Key key = KeyFactory.createKey( "diningApproval", nickname );
+		Key key = KeyFactory.createKey( DiningDAO.getKey( da.diningId ), "diningApproval", nickname );
 		Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
                 Query.FilterOperator.EQUAL,
                 key );
-		Query query = new Query( "dining" ).setAncestor( DiningDAO.getKey( da.diningId ) ).setFilter( filter );
+		Query query = new Query( "diningApproval" ).setFilter( filter );
 		PreparedQuery pQuery = service.prepare( query );
 		Entity entity = pQuery.asSingleEntity();
 		return entity;
@@ -95,11 +120,11 @@ public class DiningApprovalDAO {
 	 */
 	private static Entity getEntity( long id, DiningApproval da ) {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
-		Key key = KeyFactory.createKey( "diningApproval", id );
+		Key key = KeyFactory.createKey( UserDAO.getKey( da.user ), "diningApproval", id );
 		Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
                 Query.FilterOperator.EQUAL,
                 key );
-		Query query = new Query( "dining" ).setAncestor( UserDAO.getKey( da.user ) ).setFilter( filter );
+		Query query = new Query( "diningApproval" ).setFilter( filter );
 		PreparedQuery pQuery = service.prepare( query );
 		Entity entity = pQuery.asSingleEntity();
 		return entity;
