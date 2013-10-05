@@ -19,7 +19,7 @@ public class ListBillsServlet extends PFMServlet {
 			throws ServletException, IOException {
 		ListBillsRequest request = getRequest( req, ListBillsRequest.class );
 		User user = request.getUser();
-		resp.getWriter().println( new ListBillsResponse( new BillList( BillDAO.getOnesBills( user ) ) ) );
+		resp.getWriter().println( new ListBillsResponse( BillDAO.getOnesBills( user ) ) );
 	}
 
 }

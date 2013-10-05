@@ -22,7 +22,7 @@
 				<td><%=i %></td>
 				<td><%=diningList.get(i).diningId %></td>
 				<td><%=diningList.get(i).user.nickname %></td>
-				<td><%=diningList.get(i).state %></td>
+				<td><%=diningList.get(i).state.toString() %></td>
 			</tr>
 			<%} %>
 		</table>

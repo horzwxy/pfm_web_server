@@ -163,6 +163,24 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>ShowAllDasServlet</servlet-name>
 		<url-pattern>/alldas</url-pattern>
 	</servlet-mapping>
+		
+	<servlet>
+		<servlet-name>ShowAllBillsServlet</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.admin.ShowAllBillsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ShowAllBillsServlet</servlet-name>
+		<url-pattern>/allbills</url-pattern>
+	</servlet-mapping>
+		
+	<servlet>
+		<servlet-name>ShowAllBasServlet</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.admin.ShowAllBasServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ShowAllBasServlet</servlet-name>
+		<url-pattern>/allbas</url-pattern>
+	</servlet-mapping>
 	<!-- end of admin servlets -->
 	
 	<welcome-file-list>

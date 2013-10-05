@@ -18,6 +18,7 @@ import me.horzwxy.app.pfm.model.data.CostList;
 import me.horzwxy.app.pfm.model.data.Dining;
 import me.horzwxy.app.pfm.model.data.User;
 import me.horzwxy.app.pfm.model.data.UserList;
+import me.horzwxy.app.pfm.server.model.BillApprovalDAO;
 import me.horzwxy.app.pfm.server.model.BillDAO;
 import me.horzwxy.app.pfm.server.model.DiningApprovalDAO;
 import me.horzwxy.app.pfm.server.model.DiningDAO;
@@ -36,7 +37,8 @@ public class ApproveDiningServlet extends PFMServlet {
 		if( newState == Dining.DiningState.APPROVED ) {
 			ArrayList< Bill > bills = getBills( DiningDAO.getDining( request.getDining().id ) );
 			for( Bill bill : bills ) {
-				BillDAO.update( bill );
+				bill.billId = BillDAO.update( bill );
+				BillApprovalDAO.distribute( bill );
 			}
 		}
 		resp.getWriter().println( new ApproveDiningResponse( ResultType.SUCCESS ) );
@@ -67,6 +69,7 @@ public class ApproveDiningServlet extends PFMServlet {
 			int result = paidMap.get( user.nickname ).cost;
 			result -= dividedCost;
 			Cost costResult = paidMap.get( user.nickname );
+			System.out.println( "paidmap " + costResult.cost + "  " + costResult.nickname );
 			costResult.cost = result;
 			// can get
 			if( result > 0 ) {
@@ -77,10 +80,15 @@ public class ApproveDiningServlet extends PFMServlet {
 			}
 			System.out.println( "nickname=" + user.nickname + "  should get paids=" + result );
 		}
+		System.out.println( shouldPaySet );
+		System.out.println( canGetSet );
 		Cost payment = shouldPaySet.pollFirst();
+		System.out.println( "first should pay " + payment.nickname + "  " + payment.cost );
 		while( payment != null ) {
 			Cost biggestGet = canGetSet.pollLast();
+			System.out.println( "can get " + biggestGet.nickname + "  " + biggestGet.cost );
 			int plusResult = biggestGet.cost + payment.cost;
+			System.out.println( plusResult );
 			// get is greater
 			if( plusResult > 0 ) {
 				biggestGet.cost = plusResult;
@@ -94,17 +102,19 @@ public class ApproveDiningServlet extends PFMServlet {
 			// need more 'canGet's
 			else {
 				int totalGet = biggestGet.cost;
+				// break when just pass
 				while( totalGet + payment.cost < 0 ) {
 					billList.add( new Bill( biggestGet.nickname, payment.nickname, biggestGet.cost, dining.id ) );
 					biggestGet = canGetSet.pollLast();
 					totalGet += biggestGet.cost;
 				}
-				billList.add( new Bill( biggestGet.nickname, payment.nickname, biggestGet.cost, dining.id ) );
+				billList.add( new Bill( biggestGet.nickname, payment.nickname, biggestGet.cost - ( totalGet + payment.cost ), dining.id ) );
 				if( totalGet + payment.cost > 0 ) {
 					biggestGet.cost = totalGet + payment.cost;
 					canGetSet.add( biggestGet );
 				}
 			}
+			payment = shouldPaySet.pollFirst();
 		}
 		assert shouldPaySet.size() == 0;
 		// should learn from Lei Feng!
