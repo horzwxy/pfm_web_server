@@ -67,6 +67,35 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>ApproveDining</servlet-name>
 		<url-pattern>/approvedining</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ListBills</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.ListBillsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ListBills</servlet-name>
+		<url-pattern>/listbills</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ApproveBill</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.ApproveBillServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ApproveBill</servlet-name>
+		<url-pattern>/approvebill</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ClearBill</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.ClearBillServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ClearBill</servlet-name>
+		<url-pattern>/clearbill</url-pattern>
+	</servlet-mapping>
+	
+	
 	<!-- end of servlets -->
 	
 	<!-- start of example servlets -->
