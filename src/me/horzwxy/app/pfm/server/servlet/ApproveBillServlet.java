@@ -10,6 +10,7 @@ import me.horzwxy.app.pfm.model.communication.ApproveBillRequest;
 import me.horzwxy.app.pfm.model.communication.ApproveBillResponse;
 import me.horzwxy.app.pfm.model.data.Bill;
 import me.horzwxy.app.pfm.model.data.BillApproval;
+import me.horzwxy.app.pfm.model.data.User;
 import me.horzwxy.app.pfm.server.model.BillApprovalDAO;
 import me.horzwxy.app.pfm.server.model.BillDAO;
 
@@ -20,12 +21,12 @@ public class ApproveBillServlet extends PFMServlet {
 			throws ServletException, IOException {
 		ApproveBillRequest request = getRequest( req, ApproveBillRequest.class );
 		System.out.println( request );
-		BillApproval ba = request.ba;
+		BillApproval ba = new BillApproval( new User( request.nickname ), request.billId, request.state );
 		BillApprovalDAO.update( ba );
 		Bill.BillState newState = BillApprovalDAO.checkBillState( ba.billId );
 		if( newState != Bill.BillState.NOT_APPROVED_YET ) {
 			BillDAO.update( ba.billId, newState );
 		}
-		resp.getWriter().println( new ApproveBillResponse( ApproveBillResponse.ResultType.SUCCESS ).toPostContent() );
+		resp.getWriter().println( new ApproveBillResponse( ApproveBillResponse.ResultType.SUCCEED ).toPostContent() );
 	}
 }

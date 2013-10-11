@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import me.horzwxy.app.pfm.model.communication.ListBillsRequest;
 import me.horzwxy.app.pfm.model.communication.ListBillsResponse;
-import me.horzwxy.app.pfm.model.data.BillList;
 import me.horzwxy.app.pfm.model.data.User;
 import me.horzwxy.app.pfm.server.model.BillDAO;
 

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import me.horzwxy.app.pfm.model.communication.LogInRequest;
 import me.horzwxy.app.pfm.model.communication.LogInResponse;
-import me.horzwxy.app.pfm.model.communication.Request;
 import me.horzwxy.app.pfm.model.data.User;
 import me.horzwxy.app.pfm.server.model.UserDAO;
 
@@ -21,10 +20,10 @@ public class LogInServlet extends PFMServlet {
 		User user = UserDAO.getUser( request.accountName, request.accountType );
 		LogInResponse response = null;
 		if( user == null ) {
-			response = new LogInResponse( LogInResponse.ResultType.SUCCESS_BUT_FIRST, null );
+			response = new LogInResponse( LogInResponse.ResultType.NEED_REGISTER, null );
 		}
 		else {
-			response = new LogInResponse( LogInResponse.ResultType.SUCCESS, user.nickname );
+			response = new LogInResponse( LogInResponse.ResultType.SUCCEED, user.nickname );
 		}
 		resp.getWriter().println( response.toPostContent() );
 	}

@@ -28,7 +28,7 @@ public class AddContactServlet extends PFMServlet {
 			User owner = UserDAO.getUser( request.ownerNickname );
 			ContactInfo contact = new ContactInfo( owner, friend );
 			ContactDAO.update( contact );
-			response = new AddContactResponse( AddContactResponse.ResultType.SUCCESS );
+			response = new AddContactResponse( AddContactResponse.ResultType.SUCCEED );
 		}
 		resp.getWriter().println( response.toPostContent() );
 	}

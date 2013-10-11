@@ -6,14 +6,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import me.horzwxy.app.pfm.model.communication.AddContactResponse;
 import me.horzwxy.app.pfm.model.communication.ListContactsRequest;
 import me.horzwxy.app.pfm.model.communication.ListContactsResponse;
-import me.horzwxy.app.pfm.model.data.ContactInfo;
 import me.horzwxy.app.pfm.model.data.User;
 import me.horzwxy.app.pfm.model.data.UserList;
 import me.horzwxy.app.pfm.server.model.ContactDAO;
-import me.horzwxy.app.pfm.server.model.UserDAO;
 
 public class ListContactsServlet extends PFMServlet {
 

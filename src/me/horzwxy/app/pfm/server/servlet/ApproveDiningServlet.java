@@ -41,7 +41,7 @@ public class ApproveDiningServlet extends PFMServlet {
 				BillApprovalDAO.distribute( bill );
 			}
 		}
-		resp.getWriter().println( new ApproveDiningResponse( ResultType.SUCCESS ) );
+		resp.getWriter().println( new ApproveDiningResponse( ResultType.SUCCEED ) );
 	}
 	
 	private static ArrayList< Bill > getBills( Dining dining ) {
