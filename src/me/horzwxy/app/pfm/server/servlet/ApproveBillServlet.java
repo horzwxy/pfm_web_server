@@ -20,7 +20,6 @@ public class ApproveBillServlet extends PFMServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		ApproveBillRequest request = getRequest( req, ApproveBillRequest.class );
-		System.out.println( request );
 		BillApproval ba = new BillApproval( new User( request.nickname ), request.billId, request.state );
 		BillApprovalDAO.update( ba );
 		Bill.BillState newState = BillApprovalDAO.checkBillState( ba.billId );

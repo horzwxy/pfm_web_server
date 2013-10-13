@@ -24,6 +24,25 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 public class DiningDAO {
 	
+	public static ArrayList<Dining> getOnesDinings( User user, Dining.DiningState state ) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		Query query = new Query( "diningApproval" ).setAncestor( UserDAO.getKey( user ) );
+		Filter filter = new FilterPredicate( "state",
+                Query.FilterOperator.EQUAL,
+                state.toString() );
+		query.setFilter( filter );
+		PreparedQuery pQuery = service.prepare( query );
+		Iterator< Entity > iterator = pQuery.asIterator();
+		ArrayList< Dining > dinings = new ArrayList< Dining >();
+		while( iterator.hasNext() ) {
+			Entity entity = iterator.next();
+			long diningId = entity.getKey().getId();
+			Dining dining = getDining( diningId );
+			dinings.add( dining );
+		}
+		return dinings;
+	}
+	
 	public static ArrayList< Dining > getOnesDinings( User user ) {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		Query query = new Query( "diningApproval" ).setAncestor( UserDAO.getKey( user ) );

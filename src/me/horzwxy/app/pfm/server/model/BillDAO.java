@@ -31,6 +31,30 @@ public class BillDAO {
 		return result;
 	}
 	
+	public static ArrayList< Bill > getOnesBills( User user, Bill.BillState state ) {
+		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
+		Key parentKey = KeyFactory.createKey( "user", user.nickname );
+		Query query = new Query( "billApproval" ).setAncestor( parentKey );
+		Filter baFilter = new FilterPredicate( "state",
+                Query.FilterOperator.EQUAL,
+                state.toString() );
+		query.setFilter( baFilter );
+		PreparedQuery pQuery = service.prepare( query );
+		ArrayList< Bill > result = new ArrayList< Bill >();
+		Iterator< Entity > iterator = pQuery.asIterator();
+		while( iterator.hasNext() ) {
+			Entity entity = iterator.next();
+			Key key = KeyFactory.createKey( "bill", entity.getKey().getId() );
+			Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
+	                Query.FilterOperator.EQUAL,
+	                key );
+			Query billQuery = new Query( "bill" ).setFilter( filter );
+			PreparedQuery billPQuery = service.prepare( billQuery );
+			result.add( createBill( billPQuery.asSingleEntity() ) );
+		}
+		return result;
+	}
+	
 	public static ArrayList< Bill > getOnesBills( User user ) {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		Key parentKey = KeyFactory.createKey( "user", user.nickname );
@@ -40,8 +64,6 @@ public class BillDAO {
 		Iterator< Entity > iterator = pQuery.asIterator();
 		while( iterator.hasNext() ) {
 			Entity entity = iterator.next();
-			System.out.println( "entity = " + entity );
-			System.out.println( "billId = " + entity.getProperty( "billId" ) );
 			Key key = KeyFactory.createKey( "bill", entity.getKey().getId() );
 			Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
 	                Query.FilterOperator.EQUAL,

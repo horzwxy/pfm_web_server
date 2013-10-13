@@ -20,7 +20,14 @@ public class ListDiningsServlet extends PFMServlet {
 			throws ServletException, IOException {
 		ListDiningsRequest request = getRequest( req, ListDiningsRequest.class );
 		User user = request.getUser();
-		ArrayList< Dining > dinings = DiningDAO.getOnesDinings( user );
+		Dining.DiningState state = request.state;
+		ArrayList< Dining > dinings = null;
+		if( state == null ) {
+			dinings = DiningDAO.getOnesDinings( user );
+		}
+		else {
+			dinings = DiningDAO.getOnesDinings( user, state );
+		}
 		ListDiningsResponse response = new ListDiningsResponse( dinings );
 		resp.getWriter().println( response.toPostContent() );
 	}
