@@ -40,8 +40,6 @@ public class BillDAO {
 		Iterator< Entity > iterator = pQuery.asIterator();
 		while( iterator.hasNext() ) {
 			Entity entity = iterator.next();
-			System.out.println( "entity = " + entity );
-			System.out.println( "billId = " + entity.getProperty( "billId" ) );
 			Key key = KeyFactory.createKey( "bill", entity.getKey().getId() );
 			Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
 	                Query.FilterOperator.EQUAL,
@@ -61,7 +59,6 @@ public class BillDAO {
 		}
 		entity.setProperty( "state", bill.state.toString() );
 		long id = service.put( entity ).getId();
-		System.out.println( bill.toString() + " id=" + id );
 		return id;
 	}
 	

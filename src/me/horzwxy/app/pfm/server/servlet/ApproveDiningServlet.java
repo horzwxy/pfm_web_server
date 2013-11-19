@@ -41,7 +41,7 @@ public class ApproveDiningServlet extends PFMServlet {
 				BillApprovalDAO.distribute( bill );
 			}
 		}
-		resp.getWriter().println( new ApproveDiningResponse( ResultType.SUCCESS ) );
+		resp.getWriter().println( new ApproveDiningResponse( ResultType.SUCCEED ) );
 	}
 	
 	private static ArrayList< Bill > getBills( Dining dining ) {
@@ -69,7 +69,6 @@ public class ApproveDiningServlet extends PFMServlet {
 			int result = paidMap.get( user.nickname ).cost;
 			result -= dividedCost;
 			Cost costResult = paidMap.get( user.nickname );
-			System.out.println( "paidmap " + costResult.cost + "  " + costResult.nickname );
 			costResult.cost = result;
 			// can get
 			if( result > 0 ) {
@@ -78,17 +77,11 @@ public class ApproveDiningServlet extends PFMServlet {
 			else if( result < 0 ) {
 				shouldPaySet.add( costResult );
 			}
-			System.out.println( "nickname=" + user.nickname + "  should get paids=" + result );
 		}
-		System.out.println( shouldPaySet );
-		System.out.println( canGetSet );
 		Cost payment = shouldPaySet.pollFirst();
-		System.out.println( "first should pay " + payment.nickname + "  " + payment.cost );
 		while( payment != null ) {
 			Cost biggestGet = canGetSet.pollLast();
-			System.out.println( "can get " + biggestGet.nickname + "  " + biggestGet.cost );
 			int plusResult = biggestGet.cost + payment.cost;
-			System.out.println( plusResult );
 			// get is greater
 			if( plusResult > 0 ) {
 				biggestGet.cost = plusResult;
