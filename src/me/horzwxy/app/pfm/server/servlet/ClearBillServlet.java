@@ -25,7 +25,7 @@ public class ClearBillServlet extends PFMServlet {
 		if( newState == Bill.BillState.CLEARED ) {
 			BillDAO.update( ba.billId, newState );
 		}
-		resp.getWriter().println( new ClearBillResponse( ClearBillResponse.ResultType.SUCCESS ).toPostContent() );
+		writebackResponse( resp, new ClearBillResponse( ClearBillResponse.ResultType.SUCCESS ) );
 	}
 
 }

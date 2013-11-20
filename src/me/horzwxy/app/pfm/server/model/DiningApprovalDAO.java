@@ -74,6 +74,17 @@ public class DiningApprovalDAO {
 		}
 	}
 	
+	/**
+	 * Create DiningApproval instances for the new dining record.
+	 * There are two kinds of instance to be created. One is under the ancestorship of a User entity, \
+	 * which is a bound between a participant and the Dining entity. \
+	 * The other one is under the Dining entity, which is used to determine the Dining record state. \
+	 * For example, two users are in the record. Either of them may approve or reject the record. \
+	 * It's inconvenient to determine the dining state from a Dining entity without DiningApproval instances attached to it, \
+	 * since it needs to see who are the participants and looks into the user-diningApproval records.
+	 * It may be a little complicated to reserve two kinds of DiningApproval, especially for maintaining consistency. But it is useful for searching.
+	 * @param dining
+	 */
 	public static void distribute( Dining dining ) {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		UserList list = dining.participants;

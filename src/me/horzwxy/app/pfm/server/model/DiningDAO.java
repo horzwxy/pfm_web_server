@@ -22,8 +22,23 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
+/**
+ * The Dining entity access interface.
+ * Dining entity has a key of (long)diningId, which is arranged by an accumulated value in database.
+ * @see DiningDAO.getAvailableId()
+ * User cannot search for dining entities directly. They can only access DiningApproval entities, which encapsulate reference to the Dining entity.
+ * @see DiningApprovalDAO 
+ * 
+ * @author horz
+ * @version v0.99 There may be some bugs here.
+ */
 public class DiningDAO {
 	
+	/**
+	 * Get all dining records which has recorded that the user is in the participants list.
+	 * @param user
+	 * @return
+	 */
 	public static ArrayList< Dining > getOnesDinings( User user ) {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		Query query = new Query( "diningApproval" ).setAncestor( UserDAO.getKey( user ) );
@@ -33,6 +48,7 @@ public class DiningDAO {
 		while( iterator.hasNext() ) {
 			Entity entity = iterator.next();
 			long diningId = entity.getKey().getId();
+			// if inconsistency exists between dining record and DiningApproval record, a NullPointer exception will take place
 			Dining dining = getDining( diningId );
 			dinings.add( dining );
 		}
@@ -74,6 +90,13 @@ public class DiningDAO {
 		return result;
 	}
 	
+	/**
+	 * To create a new Dining record and insert it into database.
+	 * Notice that the generated id is returned by the function, but not put into the dining model instance.
+	 * 
+	 * @param diningInfo the model of Dining entity, only lack of id
+	 * @return the dining id for the Dining entity
+	 */
 	public static long update( Dining diningInfo ) {
 		Entity entity = createEntity( diningInfo );	// always create new dining, no need to search
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
@@ -81,6 +104,12 @@ public class DiningDAO {
 		return entity.getKey().getId();
 	}
 	
+	/**
+	 * To update the state of some Dining entity.
+	 * Usually it is called when someone approves\rejects a Dining record.
+	 * @param diningInfo
+	 * @param newState
+	 */
 	public static void update( Dining diningInfo, Dining.DiningState newState ) {
 		Entity entity = getEntity( diningInfo.id );
 		entity.setProperty( "state", newState.toString() );
@@ -116,7 +145,17 @@ public class DiningDAO {
 		return dining;
 	}
 	
-	private static long getAvailableId() {
+	/**
+	 * Every dining info has a unique id. This is the function to generate the id.
+	 * This function stores the available id in another place in database. Every time the caller needs it, \
+	 * the function retrieve the value and put it back with additional ONE.
+	 * So there is a case that for some value of id, there is no corresponding dining entity.
+	 * 
+	 * @version v1.0
+	 * 
+	 * @return available dining id in long type
+	 */
+	private synchronized static long getAvailableId() {
 		DatastoreService service = DatastoreServiceFactory.getDatastoreService();
 		Key key = KeyFactory.createKey( "diningId", 1 );
 		Filter filter = new FilterPredicate( Entity.KEY_RESERVED_PROPERTY,
@@ -127,13 +166,16 @@ public class DiningDAO {
 		long id = 1l;
 		Entity entity = pQuery.asSingleEntity();
 		if( entity == null ) {
+			// if this is the first time to retrieve the data
 			entity = new Entity( "diningId", 1 );
 		}
 		else {
 			id = (long)entity.getProperty( "value" );
 		}
+		// put the value back, with additional ONE for the next time
 		entity.setProperty( "value", id + 1 );
 		service.put( entity );
+		// return the value without the additional ONE
 		return id;
 	}
 }

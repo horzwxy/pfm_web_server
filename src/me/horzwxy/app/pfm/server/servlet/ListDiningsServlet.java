@@ -22,7 +22,7 @@ public class ListDiningsServlet extends PFMServlet {
 		User user = request.getUser();
 		ArrayList< Dining > dinings = DiningDAO.getOnesDinings( user );
 		ListDiningsResponse response = new ListDiningsResponse( dinings );
-		resp.getWriter().println( response.toPostContent() );
+		writebackResponse( resp, response );
 	}
 
 }

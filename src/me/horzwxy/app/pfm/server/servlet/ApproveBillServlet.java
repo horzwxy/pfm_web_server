@@ -26,6 +26,6 @@ public class ApproveBillServlet extends PFMServlet {
 		if( newState != Bill.BillState.NOT_APPROVED_YET ) {
 			BillDAO.update( ba.billId, newState );
 		}
-		resp.getWriter().println( new ApproveBillResponse( ApproveBillResponse.ResultType.SUCCEED ).toPostContent() );
+		writebackResponse( resp, new ApproveBillResponse( ApproveBillResponse.ResultType.SUCCEED ) );
 	}
 }

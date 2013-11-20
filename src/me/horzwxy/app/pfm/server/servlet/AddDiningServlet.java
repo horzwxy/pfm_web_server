@@ -22,6 +22,6 @@ public class AddDiningServlet extends PFMServlet {
 		dining.id = DiningDAO.update( dining );
 		DiningApprovalDAO.distribute( dining );
 		AddDiningResponse response = new AddDiningResponse( AddDiningResponse.ResultType.SUCCEED );
-		resp.getWriter().println( response.toPostContent() );
+		writebackResponse( resp, response );
 	}
 }

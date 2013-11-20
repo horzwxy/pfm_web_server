@@ -26,6 +26,6 @@ public class LogInServlet extends PFMServlet {
 		else {
 			response = new LogInResponse( LogInResponse.ResultType.SUCCEED, user.nickname );
 		}
-		resp.getWriter().println( response.toPostContent() );
+		writebackResponse( resp, response );
 	}
 }

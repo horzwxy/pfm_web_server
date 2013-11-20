@@ -120,6 +120,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	
 	<!-- start of admin servlets -->
 	<servlet>
+		<servlet-name>AddDefaultUsersServlet</servlet-name>
+		<servlet-class>me.horzwxy.app.pfm.server.servlet.admin.AddDefaultUsersServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AddDefaultUsersServlet</servlet-name>
+		<url-pattern>/adddefault</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>AddTestUser</servlet-name>
 		<servlet-class>me.horzwxy.app.pfm.server.servlet.admin.AddTestUserServlet</servlet-class>
 	</servlet>

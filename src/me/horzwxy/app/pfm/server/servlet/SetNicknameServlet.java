@@ -26,6 +26,6 @@ public class SetNicknameServlet extends PFMServlet {
 			UserDAO.updateUser( user );
 			response = new SetNicknameResponse( SetNicknameResponse.ResultType.SUCCESS );
 		}
-		resp.getWriter().println( response.toPostContent() );
+		writebackResponse( resp, response );
 	}
 }

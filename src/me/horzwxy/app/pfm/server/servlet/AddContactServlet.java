@@ -30,6 +30,6 @@ public class AddContactServlet extends PFMServlet {
 			ContactDAO.update( contact );
 			response = new AddContactResponse( AddContactResponse.ResultType.SUCCEED );
 		}
-		resp.getWriter().println( response.toPostContent() );
+		writebackResponse( resp, response );
 	}
 }
